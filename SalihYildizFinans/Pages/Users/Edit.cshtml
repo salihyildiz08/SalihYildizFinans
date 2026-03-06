@@ -1,0 +1,66 @@
+@page
+@model SalihYildizFinans.Pages.Users.EditModel
+@{
+    ViewData["Title"] = "Kullanıcı Düzenle";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white border-0 py-3">
+                 <h4 class="fw-bold mb-0">Kullanıcı Düzenle</h4>
+            </div>
+            <div class="card-body p-4">
+                <form method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+                    <input type="hidden" asp-for="Input.Id" />
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label asp-for="Input.FirstName" class="form-label fw-bold small text-secondary"></label>
+                            <input asp-for="Input.FirstName" class="form-control" />
+                            <span asp-validation-for="Input.FirstName" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Input.LastName" class="form-label fw-bold small text-secondary"></label>
+                            <input asp-for="Input.LastName" class="form-control" />
+                            <span asp-validation-for="Input.LastName" class="text-danger small"></span>
+                        </div>
+                        
+                        <div class="col-12">
+                            <label asp-for="Input.Email" class="form-label fw-bold small text-secondary"></label>
+                            <input asp-for="Input.Email" class="form-control" />
+                            <span asp-validation-for="Input.Email" class="text-danger small"></span>
+                        </div>
+                        
+                        <hr class="my-3">
+
+                        <div class="col-12">
+                             <label asp-for="Input.Role" class="form-label fw-bold small text-secondary"></label>
+                             <select asp-for="Input.Role" class="form-select">
+                                 <option value="User">User (Standart Kullanıcı)</option>
+                                 <option value="Admin">Admin (Yönetici)</option>
+                             </select>
+                             <span asp-validation-for="Input.Role" class="text-danger small"></span>
+                        </div>
+
+                         <div class="col-12">
+                             <label asp-for="Input.NewPassword" class="form-label fw-bold small text-secondary"></label>
+                            <input asp-for="Input.NewPassword" class="form-control" placeholder="Değiştirmek istemiyorsanız boş bırakın" />
+                            <span asp-validation-for="Input.NewPassword" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2 mt-4">
+                        <button type="submit" class="btn btn-primary rounded-pill py-2">Değişiklikleri Kaydet</button>
+                        <a asp-page="Index" class="btn btn-light rounded-pill py-2">İptal</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

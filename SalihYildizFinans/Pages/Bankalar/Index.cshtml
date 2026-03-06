@@ -1,0 +1,119 @@
+@page
+@model SalihYildizFinans.Pages.Bankalar.IndexModel
+@{
+    ViewData["Title"] = "Bankalar";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-1">
+                <li class="breadcrumb-item"><a href="/" class="text-decoration-none small">Anasayfa</a></li>
+                <li class="breadcrumb-item active small" aria-current="page">Bankalar</li>
+            </ol>
+        </nav>
+        <h2 class="fw-bold text-dark">Bankalarım</h2>
+        <p class="text-secondary mb-0">Hesaplarınızın bağlı olduğu bankaları yönetin</p>
+    </div>
+    <button class="btn btn-primary btn-lg rounded-pill px-4 shadow-sm" data-bs-toggle="modal" data-bs-target="#createModal">
+        <i class="fas fa-plus me-2"></i> Yeni Banka
+    </button>
+</div>
+
+<div class="card p-4">
+    <table id="banksTable" class="table table-hover align-middle w-100">
+        <thead>
+            <tr>
+                <th>Banka Adı</th>
+                <th class="text-end">İşlemler</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Banks)
+            {
+                <tr>
+                    <td class="fw-bold">@item.Name</td>
+                    <td class="text-end">
+                        <button class="btn btn-sm btn-light text-primary edit-btn" 
+                                data-id="@item.Id" data-name="@item.Name" 
+                                data-bs-toggle="modal" data-bs-target="#editModal">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <form method="post" asp-page-handler="Delete" asp-route-id="@item.Id" class="d-inline" id="deleteBankForm_@item.Id">
+                            <button type="button" class="btn btn-sm btn-light text-danger" onclick="confirmDelete('deleteBankForm_@item.Id', 'Bankayı Sil?', 'Bu banka silinecektir.')">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<!-- Create Modal -->
+<div class="modal fade" id="createModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header bg-light border-0">
+                <h5 class="modal-title fw-bold">Yeni Banka Ekle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="post" asp-page-handler="Create">
+                <div class="modal-body p-4">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small text-secondary">Banka Adı</label>
+                        <input type="text" class="form-control" name="Name" required>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 p-4">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-primary px-4">Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Modal -->
+<div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header bg-light border-0">
+                <h5 class="modal-title fw-bold">Banka Düzenle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="post" asp-page-handler="Edit">
+                <input type="hidden" id="editId" name="Id" />
+                <div class="modal-body p-4">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small text-secondary">Banka Adı</label>
+                        <input type="text" class="form-control" id="editName" name="Name" required>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 p-4">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-primary px-4">Güncelle</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            $('#banksTable').DataTable({
+                "language": { "url": "//cdn.datatables.net/plug-ins/1.13.4/i18n/tr.json" },
+                "dom": '<"d-flex justify-content-between align-items-center mb-3"f>t<"d-flex justify-content-between align-items-center mt-3"ip>',
+            });
+
+            $('.edit-btn').click(function() {
+                var id = $(this).data('id');
+                var name = $(this).data('name');
+                $('#editId').val(id);
+                $('#editName').val(name);
+            });
+        });
+    </script>
+}

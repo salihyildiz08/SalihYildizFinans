@@ -1,0 +1,44 @@
+@page
+@model SalihYildizFinans.Pages.LoginModel
+@{
+    ViewData["Title"] = "Giriş Yap";
+    Layout = "_AuthLayout";
+}
+
+<div class="card shadow-lg border-0 rounded-4">
+    <div class="card-body p-5">
+        <div class="text-center mb-4">
+            <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                <i class="fas fa-wallet fa-2x"></i>
+            </div>
+            <h4 class="fw-bold text-dark">Hoş Geldiniz</h4>
+            <p class="text-muted small">Hesabınıza giriş yapın</p>
+        </div>
+        
+        <form method="post">
+            <div class="form-floating mb-3">
+                <input type="email" class="form-control" id="floatingInput" asp-for="Email" placeholder="name@example.com" >
+                <label for="floatingInput">E-posta Adresi</label>
+            </div>
+            <div class="form-floating mb-3">
+                <input type="password" class="form-control" id="floatingPassword" asp-for="Password" placeholder="Password" >
+                <label for="floatingPassword">Şifre</label>
+            </div>
+            
+                <div class="form-check mb-4">
+                    <input class="form-check-input" type="checkbox" value="" id="rememberMe" checked>
+                    <label class="form-check-label small text-secondary" for="rememberMe">
+                        Beni Hatırla
+                    </label>
+                </div>
+            
+            <button type="submit" class="btn btn-primary w-100 py-3 rounded-3 fw-bold shadow-sm mb-3">
+                Giriş Yap <i class="fas fa-arrow-right ms-2"></i>
+            </button>
+            
+            <div class="text-center text-muted small">
+                Hesabınız yok mu? <a href="/Register" class="text-decoration-none fw-bold">Kayıt Ol</a>
+            </div>
+        </form>
+    </div>
+</div>

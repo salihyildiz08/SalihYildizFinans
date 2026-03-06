@@ -1,0 +1,279 @@
+@page
+@model SalihYildizFinans.Pages.Arac.IndexModel
+@{
+    ViewData["Title"] = "Araç Alış Satış";
+}
+
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4 gap-3">
+    <div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-1">
+                <li class="breadcrumb-item"><a href="/" class="text-decoration-none small">Anasayfa</a></li>
+                <li class="breadcrumb-item active small" aria-current="page">Araç Alış Satış</li>
+            </ol>
+        </nav>
+        <h2 class="fw-bold text-dark">Araç Alış Satış Takibi</h2>
+        <p class="text-secondary mb-0">Aldığınız ve sattığınız araçların kâr/zarar analizini yapın.</p>
+    </div>
+    
+    <button class="btn btn-primary rounded-pill px-4 shadow-sm" data-bs-toggle="modal" data-bs-target="#createTradeModal">
+        <i class="fas fa-plus me-2"></i> Yeni Araç Ekle
+    </button>
+</div>
+
+<!-- Summary Cards -->
+<div class="row g-4 mb-4">
+    <!-- Toplam Araç -->
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm overflow-hidden bg-primary bg-opacity-10">
+            <div class="card-body p-4">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="bg-primary bg-opacity-25 text-primary rounded-circle p-3 me-3">
+                        <i class="fas fa-car fa-2x"></i>
+                    </div>
+                    <div>
+                        <h6 class="text-uppercase fw-bold text-primary mb-0 ls-1">Toplam Araç</h6>
+                    </div>
+                </div>
+                <h3 class="fw-bold mb-0">@Model.TotalVehicleCount Adet</h3>
+            </div>
+        </div>
+    </div>
+    <!-- Toplam Kâr -->
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm overflow-hidden bg-success bg-opacity-10">
+            <div class="card-body p-4">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="bg-success bg-opacity-25 text-success rounded-circle p-3 me-3">
+                        <i class="fas fa-chart-line fa-2x"></i>
+                    </div>
+                    <div>
+                        <h6 class="text-uppercase fw-bold text-success mb-0 ls-1">Toplam Kâr</h6>
+                    </div>
+                </div>
+                <h3 class="fw-bold text-success mb-0">@Model.TotalProfit.ToString("C2")</h3>
+            </div>
+        </div>
+    </div>
+    <!-- Toplam Zarar -->
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm overflow-hidden bg-danger bg-opacity-10">
+            <div class="card-body p-4">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="bg-danger bg-opacity-25 text-danger rounded-circle p-3 me-3">
+                        <i class="fas fa-chart-bar fa-2x"></i>
+                    </div>
+                    <div>
+                        <h6 class="text-uppercase fw-bold text-danger mb-0 ls-1">Toplam Zarar</h6>
+                    </div>
+                </div>
+                <h3 class="fw-bold text-danger mb-0">-@Model.TotalLoss.ToString("C2")</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card border-0 shadow-sm">
+    <div class="card-body p-4">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle custom-datatable" id="tradesTable">
+                <thead>
+                    <tr>
+                        <th>Alış Tarihi</th>
+                        <th>Satış Tarihi</th>
+                        <th>Alış Tutarı</th>
+                        <th>Satış Tutarı</th>
+                        <th>Gider</th>
+                        <th>Net Kâr/Zarar</th>
+                        <th>Açıklama</th>
+                        <th class="text-center">İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var trade in Model.Trades)
+                    {
+                        <tr>
+                            <td>@trade.PurchaseDate.ToShortDateString()</td>
+                            <td>@(trade.SaleDate?.ToShortDateString() ?? "-")</td>
+                            <td>@trade.PurchasePrice.ToString("C2")</td>
+                            <td>@trade.SalePrice.ToString("C2")</td>
+                            <td>@trade.Expense.ToString("C2")</td>
+                            <td class="fw-bold @(trade.NetProfitLoss >= 0 ? "text-success" : "text-danger")">
+                                @trade.NetProfitLoss.ToString("C2")
+                            </td>
+                            <td class="small">@(trade.Description ?? "-")</td>
+                            <td class="text-center">
+                                <button class="btn btn-sm btn-light rounded-pill px-3 me-1" onclick="openEditTradeModal('@trade.Id', '@trade.PurchaseDate.ToString("yyyy-MM-dd")', '@(trade.SaleDate?.ToString("yyyy-MM-dd") ?? "")', '@trade.PurchasePrice.ToString(System.Globalization.CultureInfo.InvariantCulture)', '@trade.SalePrice.ToString(System.Globalization.CultureInfo.InvariantCulture)', '@trade.Expense.ToString(System.Globalization.CultureInfo.InvariantCulture)', '@trade.Description')">
+                                    <i class="fas fa-edit text-primary"></i>
+                                </button>
+                                <form method="post" asp-page-handler="DeleteTrade" asp-route-id="@trade.Id" class="d-inline" id="deleteTradeForm_@trade.Id">
+                                    <button type="button" class="btn btn-sm btn-light rounded-pill px-3 text-danger" onclick="confirmDelete('deleteTradeForm_@trade.Id')">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Create Modal -->
+<div class="modal fade" id="createTradeModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header bg-light border-0">
+                <h5 class="modal-title fw-bold">Yeni Araç Kaydı</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="post" asp-page-handler="Create" id="createTradeForm">
+                <div class="modal-body p-4">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small text-secondary">Alış Tarihi</label>
+                            <input type="date" class="form-control" name="PurchaseDate" required value="@DateTime.Now.ToString("yyyy-MM-dd")">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small text-secondary">Satış Tarihi</label>
+                            <input type="date" class="form-control" name="SaleDate">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold small text-secondary">Alış Tutarı</label>
+                            <input type="text" inputmode="decimal" class="form-control decimal-input" name="PurchasePrice" id="createPurchasePrice" required oninput="calculateNet('create')">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold small text-secondary">Satış Tutarı</label>
+                            <input type="text" inputmode="decimal" class="form-control decimal-input" name="SalePrice" id="createSalePrice" required oninput="calculateNet('create')">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold small text-secondary">Gider Tutarı</label>
+                            <input type="text" inputmode="decimal" class="form-control decimal-input" name="Expense" id="createExpense" required oninput="calculateNet('create')" value="0">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-bold small text-secondary">Net Kâr/Zarar</label>
+                            <input type="text" class="form-control bg-light fw-bold" id="createNetResult" readonly>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-bold small text-secondary">Açıklama</label>
+                            <textarea class="form-control" name="Description" rows="2" placeholder="Araç markası, modeli vb."></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 p-4 pt-0">
+                    <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-primary rounded-pill px-4">Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Modal -->
+<div class="modal fade" id="editTradeModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header bg-light border-0">
+                <h5 class="modal-title fw-bold">Araç Kaydını Düzenle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="post" asp-page-handler="Edit" id="editTradeForm">
+                <input type="hidden" name="Id" id="editTradeId">
+                <div class="modal-body p-4">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small text-secondary">Alış Tarihi</label>
+                            <input type="date" class="form-control" name="PurchaseDate" id="editPurchaseDate" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small text-secondary">Satış Tarihi</label>
+                            <input type="date" class="form-control" name="SaleDate" id="editSaleDate">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold small text-secondary">Alış Tutarı</label>
+                            <input type="text" inputmode="decimal" class="form-control decimal-input" name="PurchasePrice" id="editPurchasePrice" required oninput="calculateNet('edit')">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold small text-secondary">Satış Tutarı</label>
+                            <input type="text" inputmode="decimal" class="form-control decimal-input" name="SalePrice" id="editSalePrice" required oninput="calculateNet('edit')">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold small text-secondary">Gider Tutarı</label>
+                            <input type="text" inputmode="decimal" class="form-control decimal-input" name="Expense" id="editExpense" required oninput="calculateNet('edit')">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-bold small text-secondary">Net Kâr/Zarar</label>
+                            <input type="text" class="form-control bg-light fw-bold" id="editNetResult" readonly>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-bold small text-secondary">Açıklama</label>
+                            <textarea class="form-control" name="Description" id="editDescription" rows="2"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 p-4 pt-0">
+                    <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-primary rounded-pill px-4">Güncelle</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Virgülü noktaya çevirip sayıya dönüştür
+        function toNumber(val) {
+            if (!val) return 0;
+            return parseFloat(val.toString().replace(',', '.')) || 0;
+        }
+
+        $(document).ready(function() {
+            $('#tradesTable').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Turkish.json"
+                },
+                "order": [[0, "desc"]]
+            });
+
+            // Form submit öncesi decimal dönüşümü
+            $('#createTradeForm, #editTradeForm').on('submit', function() {
+                $(this).find('.decimal-input').each(function() {
+                    $(this).val(toNumber($(this).val()));
+                });
+            });
+        });
+
+        function calculateNet(prefix) {
+            const purchase = toNumber($(`#${prefix}PurchasePrice`).val());
+            const sale = toNumber($(`#${prefix}SalePrice`).val());
+            const expense = toNumber($(`#${prefix}Expense`).val());
+            const net = sale - (purchase + expense);
+            
+            const resultElem = $(`#${prefix}NetResult`);
+            resultElem.val(net % 1 === 0 ? net : net.toFixed(2));
+            
+            if (net > 0) {
+                resultElem.removeClass('text-danger').addClass('text-success');
+            } else if (net < 0) {
+                resultElem.removeClass('text-success').addClass('text-danger');
+            } else {
+                resultElem.removeClass('text-success text-danger');
+            }
+        }
+
+        function openEditTradeModal(id, purchaseDate, saleDate, purchasePrice, salePrice, expense, desc) {
+            $('#editTradeId').val(id);
+            $('#editPurchaseDate').val(purchaseDate);
+            $('#editSaleDate').val(saleDate);
+            // InvariantCulture ile gelen değerleri virgüle çevir (TR gösterimi)
+            $('#editPurchasePrice').val(purchasePrice.replace('.', ','));
+            $('#editSalePrice').val(salePrice.replace('.', ','));
+            $('#editExpense').val(expense.replace('.', ','));
+            $('#editDescription').val(desc);
+            calculateNet('edit');
+            $('#editTradeModal').modal('show');
+        }
+    </script>
+}

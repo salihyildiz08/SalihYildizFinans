@@ -1,0 +1,26 @@
+@page
+@model SalihYildizFinans.Pages.ErrorModel
+@{
+    ViewData["Title"] = "Sunucu Hatası";
+}
+
+<div class="container py-5 text-center">
+    <div class="mb-4">
+        <i class="fas fa-exclamation-triangle text-warning" style="font-size: 80px;"></i>
+    </div>
+    <h1 class="display-5 fw-bold text-dark">Bir Şeyler Ters Gitti!</h1>
+    <p class="lead text-secondary mb-4">Üzgünüz, bir sunucu hatasıyla karşılaştık. Mühendislerimiz konuyla ilgileniyor.</p>
+    
+    @if (Model.ShowRequestId)
+    {
+        <div class="bg-light p-3 rounded mb-4 d-inline-block">
+            <span class="text-muted small">Takip ID:</span> <code>@Model.RequestId</code>
+        </div>
+    }
+
+    <div>
+        <a href="/" class="btn btn-primary rounded-pill px-5 shadow-sm">
+            <i class="fas fa-home me-2"></i> Anasayfaya Dön
+        </a>
+    </div>
+</div>

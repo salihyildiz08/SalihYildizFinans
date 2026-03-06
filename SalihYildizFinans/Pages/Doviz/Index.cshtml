@@ -1,0 +1,524 @@
+@page
+@model SalihYildizFinans.Pages.Doviz.IndexModel
+@{
+    ViewData["Title"] = "Döviz Hesabı";
+}
+
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4 gap-3">
+    <div>
+        <h2 class="fw-bold text-dark mb-1">Döviz Portföyü</h2>
+        <p class="text-secondary mb-0">Altın, Gümüş, Dolar ve Euro alış-satış işlemlerinizi yönetin.</p>
+    </div>
+    <button class="btn btn-primary rounded-pill px-4 shadow-sm" data-bs-toggle="modal" data-bs-target="#createAssetModal">
+        <i class="fas fa-plus me-2"></i> Yeni Alış Ekle
+    </button>
+</div>
+
+<!-- ═══════════════════════ PORTFÖY KARTLARI ═══════════════════════ -->
+<div class="row g-4 mb-4">
+    <!-- ALTIN -->
+    <div class="col-md-6 col-lg-3">
+        <div class="card border-0 shadow-sm overflow-hidden h-100">
+            <div class="card-header border-0 py-2 px-3" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-coins text-white me-2"></i>
+                    <span class="text-white fw-bold">Altın</span>
+                </div>
+            </div>
+            <div class="card-body p-3">
+                <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+                    <span class="text-muted small"><i class="fas fa-arrow-down text-success me-1"></i>Alış</span>
+                    <div class="text-end">
+                        <div class="fw-bold small">@Model.GoldBuyQty.ToString("N2") gr</div>
+                        <div class="text-muted" style="font-size:0.7rem">@Model.GoldBuyTotal.ToString("C2")</div>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+                    <span class="text-muted small"><i class="fas fa-arrow-up text-danger me-1"></i>Satış</span>
+                    <div class="text-end">
+                        <div class="fw-bold small">@Model.GoldSellQty.ToString("N2") gr</div>
+                        <div class="text-muted" style="font-size:0.7rem">@Model.GoldSellTotal.ToString("C2")</div>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+                    <span class="text-muted small"><i class="fas fa-wallet text-warning me-1"></i>Kalan</span>
+                    <div class="text-end">
+                        <div class="fw-bold small">@Model.GoldNetQty.ToString("N2") gr</div>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="text-muted small"><i class="fas fa-chart-line me-1"></i>Kâr/Zarar</span>
+                    <div class="fw-bold small @(Model.GoldProfitLoss >= 0 ? "text-success" : "text-danger")">
+                        @(Model.GoldProfitLoss >= 0 ? "+" : "")@Model.GoldProfitLoss.ToString("C2")
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- GÜMÜŞ -->
+    <div class="col-md-6 col-lg-3">
+        <div class="card border-0 shadow-sm overflow-hidden h-100">
+            <div class="card-header border-0 py-2 px-3" style="background: linear-gradient(135deg, #6b7280, #4b5563);">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-gem text-white me-2"></i>
+                    <span class="text-white fw-bold">Gümüş</span>
+                </div>
+            </div>
+            <div class="card-body p-3">
+                <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+                    <span class="text-muted small"><i class="fas fa-arrow-down text-success me-1"></i>Alış</span>
+                    <div class="text-end">
+                        <div class="fw-bold small">@Model.SilverBuyQty.ToString("N2") gr</div>
+                        <div class="text-muted" style="font-size:0.7rem">@Model.SilverBuyTotal.ToString("C2")</div>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+                    <span class="text-muted small"><i class="fas fa-arrow-up text-danger me-1"></i>Satış</span>
+                    <div class="text-end">
+                        <div class="fw-bold small">@Model.SilverSellQty.ToString("N2") gr</div>
+                        <div class="text-muted" style="font-size:0.7rem">@Model.SilverSellTotal.ToString("C2")</div>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+                    <span class="text-muted small"><i class="fas fa-wallet text-secondary me-1"></i>Kalan</span>
+                    <div class="text-end">
+                        <div class="fw-bold small">@Model.SilverNetQty.ToString("N2") gr</div>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="text-muted small"><i class="fas fa-chart-line me-1"></i>Kâr/Zarar</span>
+                    <div class="fw-bold small @(Model.SilverProfitLoss >= 0 ? "text-success" : "text-danger")">
+                        @(Model.SilverProfitLoss >= 0 ? "+" : "")@Model.SilverProfitLoss.ToString("C2")
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- DOLAR -->
+    <div class="col-md-6 col-lg-3">
+        <div class="card border-0 shadow-sm overflow-hidden h-100">
+            <div class="card-header border-0 py-2 px-3" style="background: linear-gradient(135deg, #10b981, #059669);">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-dollar-sign text-white me-2"></i>
+                    <span class="text-white fw-bold">Dolar</span>
+                </div>
+            </div>
+            <div class="card-body p-3">
+                <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+                    <span class="text-muted small"><i class="fas fa-arrow-down text-success me-1"></i>Alış</span>
+                    <div class="text-end">
+                        <div class="fw-bold small">@Model.UsdBuyQty.ToString("N2") adet</div>
+                        <div class="text-muted" style="font-size:0.7rem">@Model.UsdBuyTotal.ToString("C2")</div>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+                    <span class="text-muted small"><i class="fas fa-arrow-up text-danger me-1"></i>Satış</span>
+                    <div class="text-end">
+                        <div class="fw-bold small">@Model.UsdSellQty.ToString("N2") adet</div>
+                        <div class="text-muted" style="font-size:0.7rem">@Model.UsdSellTotal.ToString("C2")</div>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+                    <span class="text-muted small"><i class="fas fa-wallet text-success me-1"></i>Kalan</span>
+                    <div class="text-end">
+                        <div class="fw-bold small">@Model.UsdNetQty.ToString("N2") adet</div>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="text-muted small"><i class="fas fa-chart-line me-1"></i>Kâr/Zarar</span>
+                    <div class="fw-bold small @(Model.UsdProfitLoss >= 0 ? "text-success" : "text-danger")">
+                        @(Model.UsdProfitLoss >= 0 ? "+" : "")@Model.UsdProfitLoss.ToString("C2")
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- EURO -->
+    <div class="col-md-6 col-lg-3">
+        <div class="card border-0 shadow-sm overflow-hidden h-100">
+            <div class="card-header border-0 py-2 px-3" style="background: linear-gradient(135deg, #3b82f6, #2563eb);">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-euro-sign text-white me-2"></i>
+                    <span class="text-white fw-bold">Euro</span>
+                </div>
+            </div>
+            <div class="card-body p-3">
+                <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+                    <span class="text-muted small"><i class="fas fa-arrow-down text-success me-1"></i>Alış</span>
+                    <div class="text-end">
+                        <div class="fw-bold small">@Model.EurBuyQty.ToString("N2") adet</div>
+                        <div class="text-muted" style="font-size:0.7rem">@Model.EurBuyTotal.ToString("C2")</div>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+                    <span class="text-muted small"><i class="fas fa-arrow-up text-danger me-1"></i>Satış</span>
+                    <div class="text-end">
+                        <div class="fw-bold small">@Model.EurSellQty.ToString("N2") adet</div>
+                        <div class="text-muted" style="font-size:0.7rem">@Model.EurSellTotal.ToString("C2")</div>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+                    <span class="text-muted small"><i class="fas fa-wallet text-primary me-1"></i>Kalan</span>
+                    <div class="text-end">
+                        <div class="fw-bold small">@Model.EurNetQty.ToString("N2") adet</div>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="text-muted small"><i class="fas fa-chart-line me-1"></i>Kâr/Zarar</span>
+                    <div class="fw-bold small @(Model.EurProfitLoss >= 0 ? "text-success" : "text-danger")">
+                        @(Model.EurProfitLoss >= 0 ? "+" : "")@Model.EurProfitLoss.ToString("C2")
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Toplam Kâr/Zarar -->
+<div class="alert @(Model.TotalProfitLoss >= 0 ? "alert-success" : "alert-danger") d-flex justify-content-between align-items-center mb-4 shadow-sm border-0">
+    <span class="fw-bold"><i class="fas fa-chart-pie me-2"></i>Toplam Kâr/Zarar</span>
+    <span class="fw-bold fs-5">@(Model.TotalProfitLoss >= 0 ? "+" : "")@Model.TotalProfitLoss.ToString("C2")</span>
+</div>
+
+<!-- ═══════════════════════ İŞLEM GEÇMİŞİ TABLOSU ═══════════════════════ -->
+<div class="card border-0 shadow-sm">
+    <div class="card-header bg-white border-0 py-3">
+        <h5 class="mb-0 fw-bold"><i class="fas fa-history me-2 text-primary"></i>İşlem Geçmişi</h5>
+    </div>
+    <div class="card-body p-4 pt-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle custom-datatable" id="assetsTable">
+                <thead>
+                    <tr>
+                        <th>Alış Tarihi</th>
+                        <th>Tür</th>
+                        <th>Alış Miktar</th>
+                        <th>Alış Birim</th>
+                        <th>Alış Toplam</th>
+                        <th>Satış Tarihi</th>
+                        <th>Satılan</th>
+                        <th>Satış Birim</th>
+                        <th>Satış Toplam</th>
+                        <th>Kalan</th>
+                        <th>Kâr/Zarar</th>
+                        <th>Durum</th>
+                        <th class="text-center">İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var asset in Model.Assets)
+                    {
+                        var unit = (asset.Type == SalihYildizFinans.Models.CurrencyType.Altin || asset.Type == SalihYildizFinans.Models.CurrencyType.Gumus) ? "gr" : "adet";
+                        <tr class="@(asset.IsFullySold ? "table-light" : "")">
+                            <td>@asset.Date.ToShortDateString()</td>
+                            <td>
+                                @switch (asset.Type)
+                                {
+                                    case SalihYildizFinans.Models.CurrencyType.Altin: <span class="badge bg-warning text-dark">Altın</span> break;
+                                    case SalihYildizFinans.Models.CurrencyType.Gumus: <span class="badge bg-secondary">Gümüş</span> break;
+                                    case SalihYildizFinans.Models.CurrencyType.Dolar: <span class="badge bg-success">Dolar</span> break;
+                                    case SalihYildizFinans.Models.CurrencyType.Euro: <span class="badge bg-info">Euro</span> break;
+                                }
+                            </td>
+                            <td>@asset.Quantity.ToString("N2") @unit</td>
+                            <td>@asset.UnitPrice.ToString("C2")</td>
+                            <td class="fw-bold">@asset.TotalPrice.ToString("C2")</td>
+
+                            @if (asset.IsSold)
+                            {
+                                <td>@asset.SellDate?.ToShortDateString()</td>
+                                <td>@asset.SellQuantity.ToString("N2") @unit</td>
+                                <td>@asset.SellUnitPrice.ToString("C2")</td>
+                                <td class="fw-bold">@asset.SellTotalPrice.ToString("C2")</td>
+                                <td>@asset.RemainingQuantity.ToString("N2") @unit</td>
+                                <td class="fw-bold @(asset.ProfitLoss >= 0 ? "text-success" : "text-danger")">
+                                    @(asset.ProfitLoss >= 0 ? "+" : "")@asset.ProfitLoss.ToString("C2")
+                                </td>
+                                <td>
+                                    @if (asset.IsFullySold)
+                                    {
+                                        <span class="badge bg-success bg-opacity-10 text-success"><i class="fas fa-check-circle me-1"></i>Tamamlandı</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-warning bg-opacity-10 text-warning"><i class="fas fa-clock me-1"></i>Kısmi</span>
+                                    }
+                                </td>
+                            }
+                            else
+                            {
+                                <td><span class="text-muted">—</span></td>
+                                <td><span class="text-muted">—</span></td>
+                                <td><span class="text-muted">—</span></td>
+                                <td><span class="text-muted">—</span></td>
+                                <td>@asset.Quantity.ToString("N2") @unit</td>
+                                <td><span class="text-muted">—</span></td>
+                                <td><span class="badge bg-primary bg-opacity-10 text-primary"><i class="fas fa-hourglass-half me-1"></i>Bekliyor</span></td>
+                            }
+
+                            <td class="text-center text-nowrap">
+                                @if (!asset.IsFullySold)
+                                {
+                                    <button class="btn btn-sm btn-outline-success rounded-pill px-2 me-1" title="Satış Yap"
+                                        onclick="openSellModal('@asset.Id', '@asset.Quantity.ToString(System.Globalization.CultureInfo.InvariantCulture)', '@asset.SellQuantity.ToString(System.Globalization.CultureInfo.InvariantCulture)', '@asset.SellUnitPrice.ToString(System.Globalization.CultureInfo.InvariantCulture)')">
+                                        <i class="fas fa-hand-holding-usd"></i>
+                                    </button>
+                                }
+                                @if (asset.IsSold)
+                                {
+                                    <form method="post" asp-page-handler="CancelSell" asp-route-id="@asset.Id" class="d-inline" id="cancelSellForm_@asset.Id">
+                                        <button type="button" class="btn btn-sm btn-outline-warning rounded-pill px-2 me-1" title="Satışı İptal Et" onclick="confirmCancelSell('cancelSellForm_@asset.Id')">
+                                            <i class="fas fa-undo"></i>
+                                        </button>
+                                    </form>
+                                }
+                                <button class="btn btn-sm btn-outline-primary rounded-pill px-2 me-1" title="Düzenle"
+                                    onclick="openEditModal('@asset.Id', '@asset.Date.ToString("yyyy-MM-dd")', '@((int)asset.Type)', '@asset.Quantity.ToString(System.Globalization.CultureInfo.InvariantCulture)', '@asset.UnitPrice.ToString(System.Globalization.CultureInfo.InvariantCulture)')">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <form method="post" asp-page-handler="DeleteAsset" asp-route-id="@asset.Id" class="d-inline" id="deleteAssetForm_@asset.Id">
+                                    <button type="button" class="btn btn-sm btn-outline-danger rounded-pill px-2" title="Sil" onclick="confirmDelete('deleteAssetForm_@asset.Id')">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════════ YENİ ALIŞ MODALI ═══════════════════════ -->
+<div class="modal fade" id="createAssetModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header bg-light border-0">
+                <h5 class="modal-title fw-bold"><i class="fas fa-arrow-down text-success me-2"></i>Yeni Alış Kaydı</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post" asp-page-handler="Create" id="createAssetForm">
+                <div class="modal-body p-4">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small">Tarih</label>
+                            <input type="date" class="form-control" name="Date" required value="@DateTime.Now.ToString("yyyy-MM-dd")">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small">Döviz Türü</label>
+                            <select class="form-select" name="Type" id="createType" required onchange="handleTypeChange('create')">
+                                <option value="0">Altın</option>
+                                <option value="1">Gümüş</option>
+                                <option value="2">Dolar</option>
+                                <option value="3">Euro</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold small" id="createQuantityLabel">Miktar (Gram)</label>
+                            <input type="text" inputmode="decimal" class="form-control decimal-input" name="Quantity" id="createQuantity" required oninput="calculateTotal('create')">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold small">Birim Fiyat (TL)</label>
+                            <input type="text" inputmode="decimal" class="form-control decimal-input" name="UnitPrice" id="createUnitPrice" required oninput="calculateTotal('create')">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold small">Toplam (TL)</label>
+                            <input type="text" class="form-control bg-light fw-bold" name="TotalPrice" id="createTotalPrice" readonly>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 p-4 pt-0">
+                    <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-primary rounded-pill px-4">Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════════ DÜZENLEME MODALI ═══════════════════════ -->
+<div class="modal fade" id="editAssetModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header bg-light border-0">
+                <h5 class="modal-title fw-bold"><i class="fas fa-edit text-primary me-2"></i>Alış Kaydını Düzenle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post" asp-page-handler="Edit" id="editAssetForm">
+                <input type="hidden" name="Id" id="editId">
+                <div class="modal-body p-4">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small">Tarih</label>
+                            <input type="date" class="form-control" name="Date" id="editDate" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small">Döviz Türü</label>
+                            <select class="form-select" name="Type" id="editType" required onchange="handleTypeChange('edit')">
+                                <option value="0">Altın</option>
+                                <option value="1">Gümüş</option>
+                                <option value="2">Dolar</option>
+                                <option value="3">Euro</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold small" id="editQuantityLabel">Miktar (Gram)</label>
+                            <input type="text" inputmode="decimal" class="form-control decimal-input" name="Quantity" id="editQuantity" required oninput="calculateTotal('edit')">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold small">Birim Fiyat (TL)</label>
+                            <input type="text" inputmode="decimal" class="form-control decimal-input" name="UnitPrice" id="editUnitPrice" required oninput="calculateTotal('edit')">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold small">Toplam (TL)</label>
+                            <input type="text" class="form-control bg-light fw-bold" id="editTotalPrice" readonly>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 p-4 pt-0">
+                    <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-primary rounded-pill px-4">Güncelle</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════════ SATIŞ MODALI ═══════════════════════ -->
+<div class="modal fade" id="sellAssetModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header border-0" style="background: linear-gradient(135deg, #ef4444, #dc2626);">
+                <h5 class="modal-title fw-bold text-white"><i class="fas fa-hand-holding-usd me-2"></i>Satış Yap</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post" asp-page-handler="Sell" id="sellAssetForm">
+                <input type="hidden" name="Id" id="sellId">
+                <div class="modal-body p-4">
+                    <div class="alert alert-info small mb-3">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Maksimum satılabilecek miktar: <strong id="sellMaxQty"></strong>
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small">Satış Tarihi</label>
+                            <input type="date" class="form-control" name="SellDate" id="sellDate" required value="@DateTime.Now.ToString("yyyy-MM-dd")">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small">Satış Miktarı</label>
+                            <input type="text" inputmode="decimal" class="form-control decimal-input" name="SellQuantity" id="sellQuantity" required oninput="calculateSellTotal()">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small">Satış Birim Fiyat (TL)</label>
+                            <input type="text" inputmode="decimal" class="form-control decimal-input" name="SellUnitPrice" id="sellUnitPrice" required oninput="calculateSellTotal()">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small">Satış Toplam (TL)</label>
+                            <input type="text" class="form-control bg-light fw-bold" id="sellTotalPrice" readonly>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 p-4 pt-0">
+                    <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-danger rounded-pill px-4">Satışı Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function toNumber(val) {
+            if (!val) return 0;
+            return parseFloat(val.toString().replace(',', '.')) || 0;
+        }
+
+        $(document).ready(function () {
+            $('#assetsTable').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Turkish.json"
+                },
+                "order": [[0, "desc"]],
+                "scrollX": true
+            });
+
+            // Form submit öncesi virgülleri noktaya çevir
+            $('#createAssetForm, #editAssetForm, #sellAssetForm').on('submit', function () {
+                $(this).find('.decimal-input, [name="TotalPrice"]').each(function () {
+                    $(this).val(toNumber($(this).val()));
+                });
+            });
+        });
+
+        function handleTypeChange(prefix) {
+            const type = $(`#${prefix}Type`).val();
+            const label = (type == "0" || type == "1") ? "Miktar (Gram)" : "Miktar (Adet)";
+            $(`#${prefix}QuantityLabel`).text(label);
+        }
+
+        function calculateTotal(prefix) {
+            const qty = toNumber($(`#${prefix}Quantity`).val());
+            const price = toNumber($(`#${prefix}UnitPrice`).val());
+            const total = qty * price;
+            $(`#${prefix}TotalPrice`).val(total % 1 === 0 ? total : total.toFixed(2));
+        }
+
+        function calculateSellTotal() {
+            const qty = toNumber($('#sellQuantity').val());
+            const price = toNumber($('#sellUnitPrice').val());
+            const total = qty * price;
+            $('#sellTotalPrice').val(total % 1 === 0 ? total : total.toFixed(2));
+        }
+
+        function openEditModal(id, date, type, qty, price) {
+            $('#editId').val(id);
+            $('#editDate').val(date);
+            $('#editType').val(type);
+            $('#editQuantity').val(qty.replace('.', ','));
+            $('#editUnitPrice').val(price.replace('.', ','));
+            calculateTotal('edit');
+            handleTypeChange('edit');
+            $('#editAssetModal').modal('show');
+        }
+
+        function openSellModal(id, maxQty, currentSellQty, currentSellPrice) {
+            $('#sellId').val(id);
+            var max = parseFloat(maxQty);
+            $('#sellMaxQty').text(max.toFixed(2));
+
+            if (parseFloat(currentSellQty) > 0) {
+                $('#sellQuantity').val(currentSellQty.replace('.', ','));
+                $('#sellUnitPrice').val(currentSellPrice.replace('.', ','));
+                calculateSellTotal();
+            } else {
+                $('#sellQuantity').val('');
+                $('#sellUnitPrice').val('');
+                $('#sellTotalPrice').val('');
+            }
+
+            $('#sellAssetModal').modal('show');
+        }
+
+        function confirmCancelSell(formId) {
+            Swal.fire({
+                title: 'Satışı iptal et?',
+                text: "Bu satış kaydı silinecektir!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Evet, iptal et!',
+                cancelButtonText: 'Vazgeç'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById(formId).submit();
+                }
+            });
+        }
+    </script>
+}

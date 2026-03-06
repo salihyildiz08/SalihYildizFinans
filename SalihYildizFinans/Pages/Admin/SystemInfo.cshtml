@@ -1,0 +1,106 @@
+@page
+@model SalihYildizFinans.Pages.Admin.SystemInfoModel
+@{
+    ViewData["Title"] = "Sistem Bilgileri";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex justify-content-between align-items-center bg-primary text-white">
+                    <h6 class="m-0 font-weight-bold"><i class="fas fa-server me-2"></i> Veritabanı ve Sistem Bilgileri</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5><i class="fas fa-database text-primary me-2"></i> SQL Server İstatistikleri</h5>
+                            
+                            <div class="mt-4 mb-4">
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span class="text-muted small">Kullanım: <strong>@Model.Stats.UsedMB.ToString("N2") MB</strong></span>
+                                    <span class="text-muted small">Limit: <strong>@Model.Stats.LimitMB.ToString("N2") MB</strong></span>
+                                </div>
+                                <div class="progress" style="height: 20px;">
+                                    @{
+                                        var progressColor = Model.Stats.UsagePercentage > 90 ? "bg-danger" : 
+                                                           Model.Stats.UsagePercentage > 75 ? "bg-warning" : "bg-success";
+                                    }
+                                    <div class="progress-bar @progressColor" role="progressbar" 
+                                         style="width: @Model.Stats.UsagePercentage.ToString("0")%;" 
+                                         aria-valuenow="@Model.Stats.UsagePercentage" aria-valuemin="0" aria-valuemax="100">
+                                        %@Model.Stats.UsagePercentage.ToString("N1")
+                                    </div>
+                                </div>
+                                <div class="text-end mt-1">
+                                    <small class="text-primary fw-bold">Kalan Boş Alan: @Model.Stats.RemainingMB.ToString("N2") MB</small>
+                                </div>
+                            </div>
+
+                            <table class="table table-bordered table-striped mt-3">
+                                <tbody>
+                                    <tr>
+                                        <th style="width: 40%">Veritabanı Adı</th>
+                                        <td>@Model.Stats.DatabaseName</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Toplam Ayrılan (Disk)</th>
+                                        <td>@Model.Stats.TotalAllocatedMB.ToString("N2") MB</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Rezerve Edilen</th>
+                                        <td>@Model.Stats.Reserved</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Veri Boyutu</th>
+                                        <td>@Model.Stats.Data</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Index Boyutu</th>
+                                        <td>@Model.Stats.IndexSize</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Kullanılmayan Alan</th>
+                                        <td>@Model.Stats.Unused</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <h5><i class="fas fa-info-circle text-primary me-2"></i> Sunucu Bilgileri</h5>
+                            <div class="p-3 bg-light border rounded mt-3">
+                                <p><strong>Makine Adı:</strong> @Model.Stats.MachineName</p>
+                                <p><strong>SQL Versiyonu:</strong></p>
+                                <pre style="white-space: pre-wrap; font-size: 0.85rem;">@Model.Stats.ServerVersion</pre>
+                            </div>
+                            
+                            <div class="mt-4">
+                                <h5><i class="fas fa-microchip text-primary me-2"></i> Uygulama Çalışma Ortamı</h5>
+                                <ul class="list-group mt-3">
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        İşletim Sistemi
+                                        <span>@System.Runtime.InteropServices.RuntimeInformation.OSDescription</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        .NET Versiyonu
+                                        <span>@System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        İşlemci Mimarisi
+                                        <span>@System.Runtime.InteropServices.RuntimeInformation.ProcessArchitecture</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Sayfa yüklendiğinde gerekirse ek işlemler yapılabilir
+    </script>
+}

@@ -1,0 +1,196 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Ekstre Rapor";
+    var currentYear = DateTime.Now.Year;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="fw-bold text-dark">Hoş Geldiniz</h2>
+        <p class="text-secondary mb-0">@currentYear yılı finansal durum özetiniz.</p>
+    </div>
+    
+    <div class="d-flex gap-2">
+        <a asp-page="/Borclar" class="btn btn-primary rounded-pill px-4 shadow-sm">
+            <i class="fas fa-file-invoice me-2"></i> Ekstreyi Yönet
+        </a>
+    </div>
+</div>
+
+<!-- 4 Summary Cards Row -->
+<div class="row g-3 mb-4">
+    <!-- 1. Yıl Genel Toplam -->
+    <div class="col-md-6 col-lg-3"> <!-- Changed to col-3 for 4 items -->
+        <div class="card p-3 border-start border-4 border-primary shadow-sm h-100">
+            <div class="text-secondary small fw-bold text-uppercase">@currentYear GENEL TOPLAM</div>
+            <div class="fs-4 fw-bold text-dark">@Model.YearGeneralTotal.ToString("N2") ₺</div>
+            <div class="text-muted small">Tüm yıl işlem hacmi</div>
+        </div>
+    </div>
+    
+    <!-- 2. Yıl Ödenen -->
+    <div class="col-md-6 col-lg-3">
+        <div class="card p-3 border-start border-4 border-success shadow-sm h-100">
+            <div class="text-secondary small fw-bold text-uppercase">@currentYear ÖDENEN</div>
+            <div class="fs-4 fw-bold text-success">@Model.YearPaidTotal.ToString("N2") ₺</div>
+            <div class="text-muted small">Tamamlanan ödemeler</div>
+        </div>
+    </div>
+
+    <!-- 3. Benim Payım Genel -->
+    <div class="col-md-6 col-lg-3">
+        <div class="card p-3 border-start border-4 border-danger shadow-sm h-100">
+            <div class="text-secondary small fw-bold text-uppercase">@currentYear ÖDENMEMİŞ BENİM PAYIM</div>
+            <div class="fs-4 fw-bold text-danger">@Model.YearMyShareTotal.ToString("N2") ₺</div>
+            <div class="text-muted small">Ödenmesi gereken kişisel tutar</div>
+        </div>
+    </div>
+
+    <!-- 4. Alacak Genel -->
+    <div class="col-md-6 col-lg-3">
+        <div class="card p-3 border-start border-4 border-info shadow-sm h-100">
+            <div class="text-secondary small fw-bold text-uppercase">@currentYear ÖDENMEMİŞ ALACAK</div>
+            <div class="fs-4 fw-bold text-info">@Model.YearReceivableTotal.ToString("N2") ₺</div>
+            <div class="text-muted small">Tahsil edilecek tutar</div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Left Column: Charts -->
+    <div class="col-lg-8">
+        <!-- Monthly Distribution -->
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-white border-0 py-3 d-flex justify-content-between align-items-center">
+                <h5 class="fw-bold mb-0">@Model.CurrentMonthName Dağılımı</h5>
+            </div>
+            <div class="card-body">
+                @if (Model.MonthTotalDebt > 0)
+                {
+                    var myPerc = (Model.MonthMyShare / Model.MonthTotalDebt) * 100;
+                    var othersPerc = 100 - myPerc;
+                    
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="text-muted small fw-bold">Benim Payım</span>
+                            <span class="text-danger fw-bold">@myPerc.ToString("N1")%</span>
+                        </div>
+                        <div class="progress" style="height: 10px;">
+                            <div class="progress-bar bg-danger" role="progressbar" style="width: @myPerc.ToString("N0", System.Globalization.CultureInfo.InvariantCulture)%"></div>
+                        </div>
+                         <div class="text-end small text-muted mt-1">@Model.MonthMyShare.ToString("N2") ₺</div>
+                    </div>
+
+                    <div>
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="text-muted small fw-bold">Diğer (Alacak)</span>
+                            <span class="text-info fw-bold">@othersPerc.ToString("N1")%</span>
+                        </div>
+                        <div class="progress" style="height: 10px;">
+                            <div class="progress-bar bg-info" role="progressbar" style="width: @othersPerc.ToString("N0", System.Globalization.CultureInfo.InvariantCulture)%"></div>
+                        </div>
+                        <div class="text-end small text-muted mt-1">@Model.MonthOthersShare.ToString("N2") ₺</div>
+                    </div>
+                }
+                else
+                {
+                    <p class="text-center text-muted my-4">Bu ay için henüz işlem kaydı bulunmuyor.</p>
+                }
+            </div>
+        </div>
+
+        <!-- Yearly Distribution & Recent Transactions -->
+         <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white border-0 py-3">
+                <h5 class="fw-bold mb-0">Son İşlemler</h5>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="bg-light">
+                        <tr>
+                            <th class="ps-4">Tarih</th>
+                            <th>Açıklama</th>
+                            <th>Tutar</th>
+                            <th class="text-end pe-4">Durum</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.RecentTransactions)
+                        {
+                            <tr>
+                                <td class="ps-4">@item.Date.ToShortDateString()</td>
+                                <td>
+                                    <div class="fw-bold text-dark">@item.Description</div>
+                                    <div class="small text-muted">@(item.Bank?.Name ?? "Diğer")</div>
+                                </td>
+                                <td class="fw-bold">@item.TotalAmount.ToString("N2") ₺</td>
+                                <td class="text-end pe-4">
+                                    @if(item.IsPaid) {
+                                        <span class="badge bg-success bg-opacity-10 text-success rounded-pill">Ödendi</span>
+                                    } else {
+                                        <span class="badge bg-danger bg-opacity-10 text-danger rounded-pill">Bekliyor</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                        @if(!Model.RecentTransactions.Any()) 
+                        {
+                            <tr><td colspan="4" class="text-center text-muted py-4">Henüz işlem yok.</td></tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Column: Info / Annual Stats -->
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm mb-4">
+             <div class="card-header bg-white border-0 py-3">
+                <h5 class="fw-bold mb-0">@currentYear Yıllık Dağılım</h5>
+            </div>
+            <div class="card-body">
+                 @if (Model.YearDistributionTotal > 0)
+                {
+                    var myPercY = (Model.YearDistributionMyShare / Model.YearDistributionTotal) * 100;
+                    var othersPercY = 100 - myPercY;
+
+                     <div class="d-flex align-items-center justify-content-center py-3">
+                        <div class="position-relative" style="width: 150px; height: 150px; border-radius: 50%; background: conic-gradient(#dc3545 0% @myPercY%, #0dcaf0 @myPercY% 100%);">
+                            <div class="position-absolute top-50 start-50 translate-middle bg-white rounded-circle d-flex align-items-center justify-content-center" style="width: 120px; height: 120px;">
+                                <div class="text-center">
+                                    <div class="small text-muted">Toplam</div>
+                                    <div class="fw-bold text-dark">@Model.YearDistributionTotal.ToString("N0")</div> <!-- Short format -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-3">
+                         <div class="d-flex justify-content-between align-items-center border-bottom py-2">
+                             <div><span class="badge bg-danger rounded-circle me-2 p-1"> </span> Benim Payım</div>
+                             <div class="fw-bold">@Model.YearDistributionMyShare.ToString("C0")</div>
+                         </div>
+                         <div class="d-flex justify-content-between align-items-center py-2">
+                             <div><span class="badge bg-info rounded-circle me-2 p-1"> </span> Alacak/Diğer</div>
+                             <div class="fw-bold">@Model.YearDistributionOthersShare.ToString("C0")</div>
+                         </div>
+                    </div>
+                }
+                 else
+                {
+                     <p class="text-center text-muted py-4">Yıllık veri bulunmuyor.</p>
+                }
+            </div>
+        </div>
+        
+        <div class="card bg-primary text-white border-0 shadow-sm">
+            <div class="card-body p-4 text-center">
+                <i class="fas fa-wallet fa-3x mb-3 text-white-50"></i>
+                <h5 class="fw-bold">Finansal Durum</h5>
+                <p class="small text-white-50 mb-0">Tüm borçlarınızı ve alacaklarınızı tek bir yerden yöneterek kontrolü elinizde tutun.</p>
+            </div>
+        </div>
+    </div>
+</div>

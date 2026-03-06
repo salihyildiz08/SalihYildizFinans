@@ -1,0 +1,55 @@
+@page
+@model SalihYildizFinans.Pages.RegisterModel
+@{
+    ViewData["Title"] = "Kayıt Ol";
+    Layout = "_AuthLayout";
+}
+
+<div class="card shadow-lg border-0 rounded-4">
+    <div class="card-body p-5">
+        <div class="text-center mb-4">
+            <h4 class="fw-bold text-dark">Hesap Oluştur</h4>
+            <p class="text-muted small">Finansal özgürlüğünüze adım atın</p>
+        </div>
+        
+        <form>
+            <div class="row g-2 mb-3">
+                <div class="col-md">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="floatingName" placeholder="Adınız">
+                        <label for="floatingName">Ad</label>
+                    </div>
+                </div>
+                <div class="col-md">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="floatingSurname" placeholder="Soyadınız">
+                        <label for="floatingSurname">Soyad</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-floating mb-3">
+                <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
+                <label for="floatingInput">E-posta Adresi</label>
+            </div>
+            
+            <div class="form-floating mb-3">
+                <input type="password" class="form-control" id="floatingPassword" placeholder="Password">
+                <label for="floatingPassword">Şifre</label>
+            </div>
+
+            <div class="form-floating mb-4">
+                <input type="password" class="form-control" id="floatingPasswordConfirm" placeholder="Password">
+                <label for="floatingPasswordConfirm">Şifre Tekrar</label>
+            </div>
+            
+            <button type="submit" class="btn btn-success w-100 py-3 rounded-3 fw-bold shadow-sm mb-3">
+                Kayıt Ol
+            </button>
+            
+            <div class="text-center text-muted small">
+                Zaten hesabınız var mı? <a href="/Login" class="text-decoration-none fw-bold">Giriş Yap</a>
+            </div>
+        </form>
+    </div>
+</div>

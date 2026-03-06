@@ -1,0 +1,28 @@
+@page
+@model SalihYildizFinans.Pages.Users.DeleteModel
+@{
+    ViewData["Title"] = "Kullanıcı Sil";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card border-0 shadow-sm border-top border-danger border-4">
+            <div class="card-body p-5 text-center">
+                <div class="text-danger mb-4">
+                     <i class="fas fa-exclamation-circle fa-4x"></i>
+                </div>
+                <h3 class="fw-bold text-dark">Kullanıcıyı Sil?</h3>
+                <p class="text-secondary mb-4">
+                    <strong>@Model.AppUser.UserName</strong> (@Model.AppUser.Email) adlı kullanıcıyı silmek istediğinize emin misiniz?
+                    <br><span class="text-danger small">Bu işlem geri alınamaz ve kullanıcıya ait tüm veriler silinebilir.</span>
+                </p>
+                
+                <form method="post">
+                    <input type="hidden" name="id" value="@Model.AppUser.Id" />
+                    <a asp-page="./Index" class="btn btn-light px-4 rounded-pill">Vazgeç</a>
+                    <button type="submit" class="btn btn-danger px-4 rounded-pill">Evet, Sil</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
